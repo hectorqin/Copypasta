@@ -61,6 +61,7 @@
 				<integer>1</integer>
 				<integer>2</integer>
 				<integer>3</integer>
+				<integer>4</integer>
 			</array>
 			<key>validTitles</key>
 			<array>
@@ -68,6 +69,7 @@
 				<string>BOTTOM_NO_PUSH</string>
 				<string>TOP</string>
 				<string>DICTATION</string>
+				<string>SWIPE_UP</string>
 			</array>
 			<key>alignment</key>
 			<string>4</string>
@@ -303,7 +305,7 @@
 			<key>subtitle</key>
 			<string>SOURCE_CODE</string>
 			<key>url</key>
-			<string>https://github.com/Nepeta/Copypasta</string>
+			<string>https://github.com/NepetaDev/Copypasta</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>

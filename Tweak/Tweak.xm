@@ -21,6 +21,7 @@ bool useBlur;
 bool openAutomatically;
 bool alwaysShowChevron;
 bool useDictation;
+bool useSwipe;
 bool placeUnder;
 bool hapticFeedback;
 bool dontPushKeyboardUp;
@@ -78,7 +79,7 @@ CGFloat lastContentHeight = 0;
     if (!cpaView) {
         CGRect bounds = [[UIScreen mainScreen] bounds];
         cpaView = [[CPAView alloc] initWithFrame:CGRectMake(0, bounds.size.height, bounds.size.width, 0)];
-        
+
         if (style == 1) cpaView.darkMode = false;
         else if (style == 2) cpaView.darkMode = true;
         cpaView.dismissAfterPaste = dismissAfterPaste;
@@ -88,15 +89,20 @@ CGFloat lastContentHeight = 0;
         cpaView.dismissesFully = !alwaysShowChevron;
         cpaView.tableHeight = height;
         cpaView.playsHapticFeedback = hapticFeedback;
-        
+
         [cpaView recreateBlur];
         [cpaView refresh];
     }
-    
+
     [cpaView hide:YES animated:NO];
-    
+
     [self.view addSubview:cpaView];
     [self cpaRepositionEverything];
+
+    // TODO add recognizer
+    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(cpaSwipeHandler:)];
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
+    [self.view addGestureRecognizer:recognizer];
 }
 
 -(void)viewWillAppear {
@@ -152,6 +158,12 @@ CGFloat lastContentHeight = 0;
     }
 }
 
+-(void)cpaSwipeHandler:(UISwipeGestureRecognizer *)recognizer {
+    %log((NSString *)@"cpaSwipeHandler: got here",(NSString *)@"Debug");
+    // if (!enabled || !useSwipe) return;
+    // if (!cpaView.isOpenFully) [cpaView show:YES animated:YES];
+}
+
 %end
 
 %hook UIKeyboardImpl
@@ -171,7 +183,7 @@ CGFloat lastContentHeight = 0;
     UIKBTree* orig = %orig;
     if (orig && [orig.name isEqualToString:@"Dictation-Key"]) {
         orig.properties[@"KBinteractionType"] = @(0);
-        
+
         if (hapticFeedback) AudioServicesPlaySystemSound(1519);
         if (cpaView.isOpenFully) [cpaView hide:!alwaysShowChevron animated:YES];
         else [cpaView show:YES animated:YES];
@@ -244,18 +256,19 @@ void reloadItems() {
     if (count != 0) {
         NSString *executablePath = args[0];
         if (executablePath) {
-            NSString *processName = [executablePath lastPathComponent];
-            BOOL isApplication = [executablePath rangeOfString:@"/Application/"].location != NSNotFound || [executablePath rangeOfString:@"/Applications/"].location != NSNotFound;
-            BOOL isFileProvider = [[processName lowercaseString] rangeOfString:@"fileprovider"].location != NSNotFound;
-            BOOL skip = [processName isEqualToString:@"AdSheet"]
-                        || [processName isEqualToString:@"CoreAuthUI"]
-                        || [processName isEqualToString:@"InCallService"]
-                        || [processName isEqualToString:@"MessagesNotificationViewService"]
-                        || [executablePath rangeOfString:@".appex/"].location != NSNotFound
-                        || ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
-            if (!isFileProvider && isApplication && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
-                shouldLoad = !dpkgInvalid;
-            }
+            shouldLoad = YES;
+            // NSString *processName = [executablePath lastPathComponent];
+            // BOOL isApplication = [executablePath rangeOfString:@"/Application/"].location != NSNotFound || [executablePath rangeOfString:@"/Applications/"].location != NSNotFound;
+            // BOOL isFileProvider = [[processName lowercaseString] rangeOfString:@"fileprovider"].location != NSNotFound;
+            // BOOL skip = [processName isEqualToString:@"AdSheet"]
+            //             || [processName isEqualToString:@"CoreAuthUI"]
+            //             || [processName isEqualToString:@"InCallService"]
+            //             || [processName isEqualToString:@"MessagesNotificationViewService"]
+            //             || [executablePath rangeOfString:@".appex/"].location != NSNotFound
+            //             || ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
+            // if (!isFileProvider && isApplication && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
+            //     shouldLoad = !dpkgInvalid;
+            // }
         }
     }
 
@@ -285,6 +298,7 @@ void reloadItems() {
     alwaysShowChevron = YES;
     dontPushKeyboardUp = NO;
     useDictation = NO;
+    useSwipe = NO;
 
     [preferences registerPreferenceChangeBlock:^() {
         [[CPAManager sharedInstance] setNumberOfItems:numberOfItems];
@@ -312,6 +326,13 @@ void reloadItems() {
                 alwaysShowChevron = NO;
                 dontPushKeyboardUp = NO;
                 useDictation = YES;
+                break;
+            case 4:
+                placeUnder = NO;
+                alwaysShowChevron = NO;
+                dontPushKeyboardUp = NO;
+                useDictation = NO;
+                useSwipe = YES;
                 break;
         }
 
