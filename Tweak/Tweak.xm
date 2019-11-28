@@ -100,9 +100,9 @@ CGFloat lastContentHeight = 0;
     [self cpaRepositionEverything];
 
     // TODO add recognizer
-    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(cpaSwipeHandler:)];
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
-    [self.view addGestureRecognizer:recognizer];
+    // UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(cpaSwipeHandler:)];
+    // [recognizer setDirection:(UISwipeGestureRecognizerDirectionUp)];
+    // [self.view addGestureRecognizer:recognizer];
 }
 
 -(void)viewWillAppear {

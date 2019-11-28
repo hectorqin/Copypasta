@@ -8,25 +8,25 @@
 @implementation UIImage (scale)
 
 - (UIImage *)scaleImageToSize:(CGSize)newSize {
-  
+
   CGRect scaledImageRect = CGRectZero;
-  
+
   CGFloat aspectWidth = newSize.width / self.size.width;
   CGFloat aspectHeight = newSize.height / self.size.height;
   CGFloat aspectRatio = MIN ( aspectWidth, aspectHeight );
-  
+
   scaledImageRect.size.width = self.size.width * aspectRatio;
   scaledImageRect.size.height = self.size.height * aspectRatio;
   scaledImageRect.origin.x = (newSize.width - scaledImageRect.size.width) / 2.0f;
   scaledImageRect.origin.y = (newSize.height - scaledImageRect.size.height) / 2.0f;
-  
+
   UIGraphicsBeginImageContextWithOptions( newSize, NO, 0 );
   [self drawInRect:scaledImageRect];
   UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
-  
+
   return scaledImage;
-  
+
 }
 
 @end
@@ -65,7 +65,7 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     self.tableView.layoutMargins = UIEdgeInsetsZero;
     self.tableView.separatorInset = UIEdgeInsetsZero;
-    
+
     self.emptyView = [[UIView alloc] initWithFrame:CGRectMake(0,0,50,100)];
 
     self.listEmptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0,50,100)];
@@ -76,7 +76,7 @@
     self.listEmptyLabel.font = [self.listEmptyLabel.font fontWithSize:14];
 
     self.tableView.tableFooterView = self.emptyView;
-    
+
     [self.wrapperView addSubview:self.tableView];
 
     self.dismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -87,6 +87,11 @@
     [self.dismissButton setTitle:NULL forState:UIControlStateNormal];
     [self.dismissButton setImage:[[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/CopypastaPrefs.bundle/chevron.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     [self addSubview:self.dismissButton];
+
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(close)];
+    //定义按的时间
+    longPress.minimumPressDuration = 1;
+    [self.dismissButton addGestureRecognizer:longPress];
 
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -155,7 +160,7 @@
     self.tableView.backgroundColor = [UIColor clearColor];
 
     UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:(self.darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight)];
-    
+
     self.blurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     self.blurView.frame = self.bounds;
     self.blurView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.60];
@@ -169,7 +174,7 @@
     if (self.lastHeight > 0) {
         [self setHeight:self.lastHeight];
     }
-    
+
     if (self.tableHeight > 0) {
         [self setTableHeight:self.tableHeight];
     }
@@ -308,6 +313,10 @@
     else [self show:YES animated:YES];
 }
 
+-(void)close {
+    [self hide:YES animated:NO];
+}
+
 -(void)cpaPaste:(NSString *)text {
     UIKeyboardImpl *impl = [NSClassFromString(@"UIKeyboardImpl") activeInstance];
     [impl insertText:text];
@@ -332,7 +341,7 @@
         cell.textLabel.textColor = [UIColor blackColor];
         cell.detailTextLabel.textColor = [UIColor blackColor];
     }
-    
+
     CPAItem *item = nil;
     if (indexPath.section == 0) {
         item = [[[CPAManager sharedInstance] favoriteItems] objectAtIndex:indexPath.row];
@@ -358,7 +367,7 @@
     } else {
         cell.imageView.image = nil;
     }
-    
+
     cell.detailTextLabel.text = item.content;
 
     if (!self.showNames) {
@@ -380,7 +389,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.playsHapticFeedback) AudioServicesPlaySystemSound(1519);
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     CPAItem *item = nil;
     if (indexPath.section == 0) {
         item = [[[CPAManager sharedInstance] favoriteItems] objectAtIndex:indexPath.row];
@@ -395,7 +404,7 @@
     UITableViewRowAction *favoriteAction = nil;
 
     if (indexPath.section == 1) {
-        favoriteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Favorite" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {    
+        favoriteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Favorite" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
             CPAItem *item = nil;
             if (indexPath.section == 1) {
                 item = [[[CPAManager sharedInstance] items] objectAtIndex:indexPath.row];

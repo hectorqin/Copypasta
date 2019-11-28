@@ -26,6 +26,7 @@
 
 -(void)refresh;
 -(void)toggle;
+-(void)close;
 -(void)show:(BOOL)fully animated:(BOOL)animated;
 -(void)hide:(BOOL)fully animated:(BOOL)animated;
 -(void)cpaPaste:(NSString*)text;

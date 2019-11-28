@@ -49,6 +49,16 @@
 }
 
 -(void)addItem:(CPAItem *)item {
+    int index = [_items count] - 1;
+    CPAItem *lastItem = [_items objectAtIndex:index];
+    // 与上次内容相同，则仅更新 title 和 bundleId
+    if ([lastItem.content isEqualToString:item.content]) {
+        lastItem.title = item.title;
+        lastItem.bundleId = item.bundleId;
+        [_items replaceObjectAtIndex:index withObject:lastItem];
+        [self save];
+        return;
+    }
     if ([_items count] >= self.numberOfItems) {
         [_items removeObjectsInRange:NSMakeRange(self.numberOfItems - 1, [_items count] - self.numberOfItems + 1)];
     }
@@ -71,10 +81,10 @@
 
 -(void)save {
     HBPreferences *file = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.copypasta-items"];
-    
+
     NSMutableArray *items = [NSMutableArray new];
     NSMutableArray *favoriteItems = [NSMutableArray new];
-    
+
     for (CPAItem *item in _items) {
         [items addObject:@{
           @"content": item.content ?: @"",
@@ -82,7 +92,7 @@
           @"bundleId": item.bundleId ?: @""
         }];
     }
-    
+
     for (CPAItem *item in _favoriteItems) {
         [favoriteItems addObject:@{
           @"content": item.content ?: @"",

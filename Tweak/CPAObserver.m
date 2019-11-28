@@ -10,7 +10,12 @@
 
 -(void)pasteboardUpdated {
     NSString *content = [[UIPasteboard generalPasteboard] string];
-    if (!content) return;
+    if (!content || content == nil || content == NULL) {
+        return;
+    }
+    if ([[content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]==0) {
+        return;
+    }
 
     if (self.lastContent && [self.lastContent isEqualToString:content]) return;
     self.lastContent = content;
