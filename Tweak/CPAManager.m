@@ -49,6 +49,7 @@
 }
 
 -(void)addItem:(CPAItem *)item {
+    NSLog(@"__COPYPASTA__  addItem %@", item.content);
     int index = [_items count] - 1;
     CPAItem *lastItem = [_items objectAtIndex:index];
     // 与上次内容相同，则仅更新 title 和 bundleId
@@ -68,12 +69,14 @@
 }
 
 -(void)removeItem:(CPAItem *)item {
+    NSLog(@"__COPYPASTA__  removeItem %@", item.content);
     [_items removeObject:item];
     [_favoriteItems removeObject:item];
     [self save];
 }
 
 -(void)favoriteItem:(CPAItem *)item {
+    NSLog(@"__COPYPASTA__  favoriteItem %@", item.content);
     [_items removeObject:item];
     [_favoriteItems insertObject:item atIndex:0];
     [self save];

@@ -238,6 +238,8 @@ CGFloat lastContentHeight = 0;
 %end
 
 void reloadItems() {
+    NSLog(@"__COPYPASTA__  reloadItems");
+
     [[CPAManager sharedInstance] reload];
     if (cpaView) {
         [cpaView refresh];
@@ -255,10 +257,15 @@ void reloadItems() {
     NSUInteger count = args.count;
     if (count != 0) {
         NSString *executablePath = args[0];
+        NSLog(@"__COPYPASTA__  executablePath %@", executablePath);
         if (executablePath) {
-            shouldLoad = YES;
-            // NSString *processName = [executablePath lastPathComponent];
-            // BOOL isApplication = [executablePath rangeOfString:@"/Application/"].location != NSNotFound || [executablePath rangeOfString:@"/Applications/"].location != NSNotFound;
+            NSString *processName = [executablePath lastPathComponent];
+            BOOL isSpringBoard = [processName isEqualToString:@"SpringBoard"];
+            BOOL isApplication = [executablePath rangeOfString:@"/Application/"].location != NSNotFound || [executablePath rangeOfString:@"/Applications/"].location != NSNotFound;
+            BOOL skip = [executablePath rangeOfString:@".appex/"].location != NSNotFound;
+            if ((isSpringBoard || isApplication) && !skip) {
+                shouldLoad = YES;
+            }
             // BOOL isFileProvider = [[processName lowercaseString] rangeOfString:@"fileprovider"].location != NSNotFound;
             // BOOL skip = [processName isEqualToString:@"AdSheet"]
             //             || [processName isEqualToString:@"CoreAuthUI"]
@@ -277,8 +284,11 @@ void reloadItems() {
         return;
     }
     if (!shouldLoad) return;
+    NSLog(@"__COPYPASTA__  loaded");
 
     cpaObserver = [[CPAObserver alloc] init];
+
+    NSLog(@"__COPYPASTA__  init cpaObserver");
 
     preferences = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.copypasta"];
 

@@ -10,6 +10,7 @@
 
 -(void)pasteboardUpdated {
     NSString *content = [[UIPasteboard generalPasteboard] string];
+    NSLog(@"__COPYPASTA__   pasteboardUpdated %@", content);
     if (!content || content == nil || content == NULL) {
         return;
     }
