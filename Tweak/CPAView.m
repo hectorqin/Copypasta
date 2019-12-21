@@ -320,6 +320,7 @@
 -(void)cpaPaste:(NSString *)text {
     UIKeyboardImpl *impl = [NSClassFromString(@"UIKeyboardImpl") activeInstance];
     [impl insertText:text];
+    [impl refreshKeyboardState];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

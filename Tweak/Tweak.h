@@ -1,8 +1,8 @@
 @interface UIKBTree : NSObject
 
-@property (assign,nonatomic) int type; 
+@property (assign,nonatomic) int type;
 @property (nonatomic,retain) NSString * name;
-@property (nonatomic,retain) NSMutableDictionary * properties; 
+@property (nonatomic,retain) NSMutableDictionary * properties;
 
 @end
 
@@ -53,9 +53,9 @@
 
 @property (nonatomic,retain) UIInputViewSetPlacement_GenericApplicator *applicator;
 @property (nonatomic,retain) NSLayoutConstraint * inputViewHeightConstraint;
-@property (nonatomic,readonly) UIInputSetHostView * hostView; 
-@property (nonatomic,retain) UIInputViewSetPlacement * placement;  
-@property (retain,readonly) UIView * containerView; 
+@property (nonatomic,readonly) UIInputSetHostView * hostView;
+@property (nonatomic,retain) UIInputViewSetPlacement * placement;
+@property (retain,readonly) UIView * containerView;
 -(void)updateInputAssistantView:(id)arg1 ;
 -(void)candidateBarWillChangeHeight:(double)arg1 withDuration:(double)arg2 ;
 -(UIView *)_inputView;
@@ -70,5 +70,5 @@
 
 +(id)activeInstance;
 -(void)insertText:(NSString *)text;
-
+- (void)refreshKeyboardState;
 @end

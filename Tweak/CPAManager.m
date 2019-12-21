@@ -50,15 +50,17 @@
 
 -(void)addItem:(CPAItem *)item {
     NSLog(@"__COPYPASTA__  addItem %@", item.content);
-    int index = [_items count] - 1;
-    CPAItem *lastItem = [_items objectAtIndex:index];
-    // 与上次内容相同，则仅更新 title 和 bundleId
-    if ([lastItem.content isEqualToString:item.content]) {
-        lastItem.title = item.title;
-        lastItem.bundleId = item.bundleId;
-        [_items replaceObjectAtIndex:index withObject:lastItem];
-        [self save];
-        return;
+    if ([_items count] >= 1) {
+        int index = [_items count] - 1;
+        CPAItem *lastItem = [_items objectAtIndex:index];
+        // 与上次内容相同，则仅更新 title 和 bundleId
+        if ([lastItem.content isEqualToString:item.content]) {
+            lastItem.title = item.title;
+            lastItem.bundleId = item.bundleId;
+            [_items replaceObjectAtIndex:index withObject:lastItem];
+            [self save];
+            return;
+        }
     }
     if ([_items count] >= self.numberOfItems) {
         [_items removeObjectsInRange:NSMakeRange(self.numberOfItems - 1, [_items count] - self.numberOfItems + 1)];
